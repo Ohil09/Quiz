@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple QUIZ</title>
+    <style>
+    body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #b51f1f, #000000);
+    }
+    .container {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 15px 30px rgba(0,0,0,1);
+    width: 350px;
+    text-align: center;
+    }
+    #question {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    color: #333;
+    }
+    #options {
+    text-align: left;
+    margin-bottom: 20px;
+    }
+    #options input[type="radio"] {
+    margin-right: 10px;
+    transform: scale(1.1);
+    }
+    #options label {
+    margin-bottom: 10px;
+    display: inline-block;
+    cursor: pointer;
+    }
+    .btn button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    margin: 5px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+    }
+    .btn button:hover {
+    background: #45a049;
+    }
+    .btn button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    }
+    #restart-btn {
+    display: none; /* Hidden initially */
+    }
+    h1{
+    position: absolute;
+    top: 80px;
+    width: 100%;
+    text-align: center;
+    font-size: 2rem;
+    color: #fff;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    margin: 0;
+    padding: 0;
+    }
+    #question-number {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+    }
+    </style>
+</head>
+<body>
+    <h1>Let's see your F1 knowledge !</h1>
+    <div class="container">
+        <div id="question-number"></div>
+        <div id="question"></div>
+        <div id="options"></div>
+        <div class="btn">
+            <button id="next-btn">NEXT</button>
+            <button id="score-btn">SCORE</button>
+            <button id="restart-btn">RESTART</button>
+        </div>
+    </div>
+    
+    <script>
+        quizData=[
+            {
+                question:"What team did Lewis Hamilton debut with in Formula 1?",
+                options:["McLaren","Mercedes","Ferrari","Red Bull"],
+                answer:0
+            },
+            {
+                question: "Who was the first-ever Formula 1 World Champion (1950)?",
+                options: ["Juan Manuel Fangio", "Giuseppe Farina", "Alberto Ascari", "Stirling Moss"],
+                answer: 1
+            },
+            {
+                question: "Who holds the record for the most Formula 1 race wins (as of 2024)?",
+                options: ["Lewis Hamilton", "Michael Schumacher", "Max Verstappen", "Sebastian Vettel"],
+                answer: 0
+            },
+            {
+                question: "How old was Max Verstappen when he made his F1 debut?",
+                options: ["17", "19", "18", "20"],
+                answer: 0
+            },
+            {
+                question: "How many Formula 1 World Championships has Lewis Hamilton won?",
+                options: ["5", "6", "7", "8"],
+                answer: 2
+            },
+            {
+                question: "Who was the first driver to win 5 Formula 1 World Championships?",
+                options: ["Juan Manuel Fangio", "Alain Prost", "Michael Schumacher", "Ayrton Senna"],
+                answer: 0
+            },
+            {
+                question: "What is the oldest active F1 Grand Prix circuit?",
+                options: ["Silverstone (UK)", "Monza (Italy)", "Spa-Francorchamps (Belgium)", "Monaco"],
+                answer: 1
+            },
+            {
+                question: "What is Lewis Hamilton’s full name?",
+                options: ["Lewis Carlton Hamilton","Lewis Charles Hamilton", "Sir Lewis Hamilton", "Lewis Carl Davidson Hamilton"],
+                answer: 3
+            },
+            {
+                question: "Which driver famously battled Ayrton Senna in the late 1980s as his main rival?",
+                options: ["Nigel Mansell", "Nelson Piquet", "Alain Prost", "Michael Schumacher"],
+                answer: 2
+            },
+            {
+                question: "Which junior team did Max Verstappen start his F1 career with?",
+                options: ["Toro Rosso", "Sauber", "Williams", "Lotus"],
+                answer: 0
+            },
+            { 
+                question: "Who was Lewis Hamilton’s main title rival during the 2016 season?", 
+                options: ["Nico Rosberg", "Sebastian Vettel", "Fernando Alonso", "Max Verstappen"], 
+                answer: 0 
+            },
+            {
+                question: "Which of these is Lewis Hamilton known for outside racing?",
+                options: ["Acting", "Music and Fashion", "Cooking Shows", "Influencer"],
+                answer: 1
+            },
+            {
+                question: "Fernando Alonso won back-to-back titles with which team in 2005 and 2006?",
+                options: ["Renault", "Ferrari", "McLaren", "Red Bull"],
+                answer: 0
+            },
+            {
+                question: "Which team has won the most Constructors' Championships?",
+                options: ["Red Bull" , "Mercedes", "McLaren", "Ferrari"],
+                answer: 3
+            },
+            { 
+                question: "Who is the youngest F1 race winner in history (as of 2024)?", 
+                options: ["Max Verstappen", "Sebastian Vettel", "Charles Leclerc", "Fernando Alonso"], 
+                answer: 0 
+            },
+             {
+                question: "Which driver won 4 consecutive World Championships from 2010 to 2013?",
+                options: ["Fernando Alonso", "Lewis Hamilton",  "Sebastian Vettel", "Kimi Räikkönen"],
+                answer: 2
+            },
+            {
+                question: "Which British driver won the F1 World Championship in 2009?",
+                options: ["Lewis Hamilton", "Jenson Button", "Nigel Mansell", "Damon Hill"],
+                answer: 1
+            },
+            {
+                question: "Who was Lewis Hamilton's teammate at McLaren in 2007?",
+                options: ["Kimi Räikkönen", "Jenson Button", "Nico Rosberg", "Fernando Alonso"],
+                answer: 3
+            },
+            {
+                question: "What does DRS stand for in F1?",
+                options: ["Dynamic Racing Strategy", "Drag Reduction System", "Driver Reaction Setup", "Downforce Regulation System"],
+                answer: 1
+            },
+            {
+                question: "Which F1 driver holds the record for the most pole positions (as of 2024)?",
+                options: ["Lewis Hamilton", "Ayrton Senna", "Michael Schumacher", "Sebastian Vettel"],
+                answer: 0
+            }
+        ];
+        let CurQ=0;
+        let score=0;
+
+        const QE=document.getElementById("question");
+        const OE=document.getElementById("options");
+        const nextBtn=document.getElementById("next-btn");
+        const scoreBtn=document.getElementById("score-btn");
+        const restartBtn = document.getElementById("restart-btn");
+
+
+        function showQuestion()
+        {
+            const QN = document.getElementById("question-number");
+            QN.innerHTML = "Question " + (CurQ + 1) + " of " + quizData.length;
+
+            QE.innerHTML=quizData[CurQ].question;
+            OE.innerHTML="";
+
+            for(let i=0; i<quizData[CurQ].options.length;i++)
+            {
+
+                const optionE=document.createElement('input');
+                optionE.type="radio";
+                optionE.name="answer";
+                optionE.value=i;
+
+                const labelE=document.createElement('label');
+                labelE.innerHTML=quizData[CurQ].options[i];
+
+                OE.appendChild(optionE);
+                OE.appendChild(labelE);
+                OE.appendChild(document.createElement("br"));
+            }
+        }
+
+        
+        function showScore()
+        {
+            alert('Your score is : '+score);
+        }
+
+        function checkAns()
+        {
+            const selected_Opt=OE.querySelector('input[type="radio"]:checked');
+            if(selected_Opt)
+            {
+                const selected_ans=parseInt(selected_Opt.value);
+                if(selected_ans==quizData[CurQ].answer)
+                {
+                    score+=1;
+                }
+                return true;
+            }
+            else
+            {
+                alert('Please select an option!');
+                return false;
+            }
+        }
+
+        restartBtn.addEventListener('click', function () 
+        {
+            CurQ = 0;
+            score = 0;
+            nextBtn.disabled = false;
+            showQuestion();
+            restartBtn.style.display = "none";
+        });
+
+        showQuestion();
+
+        nextBtn.addEventListener('click',function(){
+            if(checkAns())
+            {
+                CurQ++;
+                if(CurQ<quizData.length)
+                {
+                    showQuestion();
+                }
+                else
+                {
+                    nextBtn.disabled=true;
+                    restartBtn.style.display = "inline"; // Show Restart
+                    alert("Quiz Completed!");
+                    showScore();
+                }
+            }
+        });
+    scoreBtn.addEventListener('click',showScore);
+    </script>
+</body>
+</html>
