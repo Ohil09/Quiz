@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Quiz</title>
+    <style>
+         body {
+        user-select: none;             
+        -webkit-user-select: none;     
+        -moz-user-select: none;        
+        -ms-user-select: none;         
+        padding: 0;
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: large;
+        background: linear-gradient(200deg, blue, red);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
+
+    .container {
+        background: #d3d1d1;
+        padding: 50px;
+        border-radius: 20px;
+        box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.2);
+        width: 60%;
+        text-align: center;
+    }
+
+    #question-number, #question, #current-score, #last-score {
+        margin: 15px 0;
+        font-weight: bold;
+    }
+    #question{
+        text-align: left;
+        font-size: larger;
+    }
+
+    #options {
+        margin: 20px 0;
+        text-align: left;
+    }
+
+    #options label {
+        margin-left: 8px;
+        margin-right: 20px;
+        font-size: larger;
+    }
+
+    .btn button {
+        margin: 10px;
+        padding: 12px 25px;
+        font-size: 16px;
+        background: #323532;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .btn button:hover {
+        background: #828282;
+    }
+
+    .btn button:disabled {
+        background: #888;
+        cursor: not-allowed;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="score-display"></div>
+        <div id="last-score"></div>
+        <div id="current-score"></div>
+        <div id="question-number"></div>
+        <div id="question"></div>
+        <div id="options"></div>
+        <div class="btn">
+            <button  id="next-btn" type="button">NEXT</button>
+            <button  id="score-btn" type="button">SCORE</button>
+            <button  id="reset-btn" type="button">RESTART</button>
+        </div>
+    </div>
+    <script>
+        const quizData=[
+            {
+        question: "What is 5 + 3?",
+        options: ["8", "7", "5", "10"],
+        answer: 0
+    },
+    {
+        question: "Which planet is known as the Red Planet?",
+        options: ["Mars", "Earth", "Venus", "Jupiter"],
+        answer: 0
+    },
+    {
+        question: "What is the capital of India?",
+        options: ["New Delhi", "Mumbai", "Kolkata", "Chennai"],
+        answer: 0
+    },
+    {
+        question: "Which is the largest mammal?",
+        options: ["Elephant", "Blue Whale", "Shark", "Giraffe"],
+        answer: 1
+    },
+    {
+        question: "What is H2O commonly known as?",
+        options: ["Water", "Hydrogen", "Oxygen", "Salt"],
+        answer: 0
+    },
+    {
+        question: "Which language is primarily used to create websites?",
+        options: ["HTML", "Python", "C++", "Java"],
+        answer: 0
+    },
+    {
+        question: "How many sides does a triangle have?",
+        options: ["3", "4", "5", "6"],
+        answer: 0
+    },
+    {
+        question: "Who is known as the father of computers?",
+        options: ["Charles Babbage", "Albert Einstein", "Isaac Newton", "Thomas Edison"],
+        answer: 0
+    }
+        ];
+        //initializing 
+        let score=0;
+        let current_question=0;
+
+        //Getting element id into local variable
+        const question_ele=document.getElementById("question");
+        const option_ele=document.getElementById("options");
+        const question_no_ele=document.getElementById("question-number");
+        const nextBtn=document.getElementById("next-btn");
+        const scoreBtn=document.getElementById("score-btn");
+        const resetBtn=document.getElementById("reset-btn");
+
+        function showQuestion()
+        {
+            //show Question number , Current Question and clear previous options
+            question_no_ele.textContent ="Question " + (current_question + 1) + " of " + quizData.length;
+            question_ele.textContent =quizData[current_question].question;
+            option_ele.textContent ="";
+
+            //Loop for 4 options of a question
+            for(let i=0;i<quizData[current_question].options.length;i++)
+            {
+                //creating radio button
+                const option_radio=document.createElement("input");
+                option_radio.type="radio";
+                option_radio.name="answer";
+                option_radio.value=i;
+
+                //label the options
+                const label_ele=document.createElement('label');
+                label_ele.textContent =quizData[current_question].options[i];
+
+                //Append the elements
+                option_ele.appendChild(option_radio);
+                option_ele.appendChild(label_ele);
+                option_ele.appendChild(document.createElement("br"));
+            }
+        }
+        //Function to check the selected options/ans
+        function check_ans()
+        {
+            const selected_opt=option_ele.querySelector('input[type="radio"]:checked');
+            if(selected_opt) //If an option is selected
+            {
+                const selected_ans=parseInt(selected_opt.value);
+                if (selected_ans==quizData[current_question].answer)//Check the Current answer against actual answer
+                {
+                    score+=10;    
+                    document.getElementById("current-score").textContent = "Your current Score: " + score;
+                }
+                return true;
+            }
+            else //if option is not selected
+            {
+                alert('Please select an option !');
+                return false;
+            }
+        }
+
+        //Function to return score
+        function showScore()
+        {
+            alert('Your score : '+score)
+        }
+
+        //Add Event listeners for Next , Restart , Score
+
+        resetBtn.addEventListener('click',function() //Restart button click
+        {
+            current_question=0;
+            score=0;
+
+            nextBtn.disabled=false;
+            resetBtn.style.display = "none";
+
+            showQuestion();
+            alert("Quiz restarted! Good luck!");
+        });
+
+        showQuestion();
+
+        nextBtn.addEventListener('click',function()//Next button click
+        {
+            if(check_ans())
+            {
+                current_question++;
+                if(current_question<quizData.length)//Check if Current question is less than the last question
+                {
+                    showQuestion();
+                }
+                else
+                {
+                    nextBtn.disabled=true;
+                    resetBtn.style.display="inline";
+                    alert('Quiz completed !');
+                    document.getElementById("last-score").textContent = "Last Score: " + score;
+                    document.getElementById("current-score").textContent = "";
+                    showScore();
+                }
+            }
+        });
+        scoreBtn.addEventListener('click',showScore());//Score button click
+        
+    </script>
+</body>
+</html>
